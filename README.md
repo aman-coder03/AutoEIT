@@ -11,18 +11,21 @@ This repo contains my solution for Test II: implement a reproducible script that
 - `autoeit_scoring.ipynb` — the main notebook, start here
 - `autoeit_scoring_executed.ipynb` — same notebook with all outputs already run
 - `autoeit_scoring_with_output.html` — HTML export of the executed notebook (easier to view without Jupyter)
-- `AutoEIT_Scored_Output.xlsx` — the scored Excel file, one sheet per participant, with Auto_Score column added
+- `AutoEIT_Sample_Transcriptions_for_Scoring.xlsx` — input file with transcriptions (blank scores)
+- `AutoEIT_Sample_Transcriptions_for_Scoring_SCORED.xlsx` — output file with scores filled in
 
 ---
 
 ## How to run it
 
-You'll need the original data file `Example_EIT_Transcription_and_Scoring_Sheet.xlsx` in the same directory as the notebook. That file isn't in this repo since it's provided by the mentors.
+Put `AutoEIT_Sample_Transcriptions_for_Scoring.xlsx` in the same folder as the notebook, then:
 
 ```bash
 pip install pandas openpyxl rapidfuzz scikit-learn matplotlib seaborn
 jupyter notebook autoeit_scoring.ipynb
 ```
+
+Run all cells top to bottom. The scored output file gets written automatically to the same folder.
 
 Python 3.10+ recommended. No GPU needed, everything runs on CPU.
 
@@ -44,15 +47,15 @@ The key thing that makes this work better than simple word matching is **fuzzy w
 
 ## Results
 
-Evaluated against 1,560 human-rated utterances across 52 participants:
+Evaluated against 1,560 human-rated utterances across 52 participants from the full EIT dataset:
 
 | Metric | Result | Target |
 |--------|--------|--------|
-| Exact agreement | 86.9% | >= 90% |
-| Adjacent agreement (within 1 point) | 99.3% | |
-| Cohen's Kappa | 0.774 | |
-| Mean total score difference per participant | 2.0 pts | < 10 pts |
-| Participants within 10-point difference | 98.1% | |
+| Exact agreement | 79.6% | >= 90% |
+| Adjacent agreement (within 1 point) | 98.0% | |
+| Cohen's Kappa | 0.620 | |
+| Mean total score difference per participant | 4.6 pts | < 10 pts |
+| Participants within 10-point difference | 92.3% | |
 
 The total score targets from the project spec are comfortably met. The gap to 90% exact agreement sits almost entirely at the 3/4 boundary (around 136 cases out of 1,560). These are cases where a grammar change is subtle enough that a human rater still scores it 4, but it's not a verbatim match either. Things like tense shifts (`fue` to `era`) or subject-verb agreement (`encantan` to `encanta`) fall in this grey area. Resolving these correctly needs semantic understanding of whether a grammar change actually shifts the meaning, which is beyond what lexical features alone can do. A multilingual sentence encoder like LaBSE or paraphrase-multilingual-MiniLM would be the natural next step, and that's essentially what the full GSoC project is asking for.
 
@@ -60,10 +63,9 @@ The total score targets from the project spec are comfortably met. The gap to 90
 
 ## Files generated
 
-The notebook writes `AutoEIT_Scored_Output.xlsx` to the working directory. It's a copy of the input file with four new columns added to each participant sheet: `Auto_Score`, `Scoring_Reason`, `Fuzzy_Sim`, and `Content_Overlap`. The score cells are colour-coded (green for 4, yellow for 2, red for 0 etc.) to make it easy to spot patterns at a glance.
+The notebook writes `AutoEIT_Sample_Transcriptions_for_Scoring_SCORED.xlsx` to the working directory. It's a copy of the input file with four new columns added to each participant sheet: `Auto_Score`, `Scoring_Reason`, `Fuzzy_Sim`, and `Content_Overlap`. The score cells are colour-coded (green for 4, yellow for 2, red for 0 etc.) to make it easy to spot patterns at a glance.
 
 ---
 
 Aman Srivastava  
 amansri345@gmail.com  
-github.com/aman-coder03
